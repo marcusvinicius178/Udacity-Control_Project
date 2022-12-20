@@ -51,7 +51,7 @@ double PID::TotalError() {
     // MUST i CALCULATE HERE ??????????????????????? OR IN UpdateError() function above?
     
     // From Step 2 of Udacity the output of controller must be set to [-1,1]
-    control = (-Kp*current_cte) + (-Kd*current_cte) + (-Ki*current_cte);
+    control = (-Kp*current_cte) + (-Kd*diff_cte) + (-Ki*int_cte);
     if (control < output_lim_min){
     	cout << "Control Output (torque) is TOO LOW, adjusting to minimum value = " << output_lim_min << " \n ";
     	control = output_lim_min
