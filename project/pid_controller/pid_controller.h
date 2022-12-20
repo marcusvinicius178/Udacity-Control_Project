@@ -17,18 +17,30 @@ public:
     /*
     * Errors
     */
+    double current_cte;       // Crostrack Error (Proportional Term)
+    double diff_cte;  // Derivative Cross Track Error
+    double int_cte;    // Integral Cross Track Error
 
     /*
     * Coefficients
     */
+    double Kp;       // Proportional Gain
+    double Ki;       // Integral Gain
+    double Kd;      // Derivative Gain
+    
 
     /*
     * Output limits
     */
+    
+    double output_lim_max;  // Max Tolerance Threshold
+    double output_lim_min;  // Min Tolerance Threshold
   
     /*
     * Delta time
     */
+    double delta_time;     // No idea what this delta time is
+    
 
     /*
     * Constructor
