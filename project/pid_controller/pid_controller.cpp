@@ -33,22 +33,36 @@ void PID::UpdateError(double cte) {
    * TODO: Update PID errors based on cte.
    **/
    current_cte = cte;
+   // I guess I need to create an array to calculate the diff_cte and the int_cte....in this way I get
+   //diff_cte = current_cte - prev_cte
+   //int_cte = 0
+   //int_cte += current_cte
 }
 
 double PID::TotalError() {
    /**
    * TODO: Calculate and return the total error
-    * The code should return a value in the interval [output_lim_mini, output_lim_maxi]
+    * The code should return a value in the interval [output_lim_mini, output_lim_maxi] 
+    // From Step 2 of Udacity the output of controller must be set to [-1,1]
    */
     double control;
-    if (current_cte < output_lim_mini){
-    	cout << "Lower Boundary too low, setting it to minimum boundary value";
-    	current_cte = output_lim_mini;
-    } else if (current_cte > output_lim_maxi){
-    	cout << "Upper Boundary too high, setting it to max boundary value";
-    	current_cte = output_lim_maxi;
-    }
+    // MUST CALCULATE THE PID ERROR HERE!!! BELOW:
+    // The total error is the sum of each cte, I guess it means the INTEGRAL ERROR?
+    // MUST i CALCULATE HERE ??????????????????????? OR IN UpdateError() function above?
+    
+    // From Step 2 of Udacity the output of controller must be set to [-1,1]
     control = (-Kp*current_cte) + (-Kd*current_cte) + (-Ki*current_cte);
+    if (control < output_lim_min){
+    	cout << "Control Output (torque) is TOO LOW, adjusting to minimum value = " << output_lim_min << " \n ";
+    	control = output_lim_min
+    } else if (control > output_lim_max){
+    	cout << "Control Output (torque) is TOO HIGH, setting it to maximum value = " << output_lim_max << " \n ";
+    	control = output_lim_max
+    }
+    else {
+    	cout << "Control Output (torque) is between the accetable boundaries [ " << output_lim_min << "," << output_lim_min << " output_lim_max ]";  
+   	cout << "Contol Output = " << control;
+    }
     return control;
 }
 

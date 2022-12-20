@@ -86,7 +86,7 @@ BehaviorPlannerFSM behavior_planner(
       P_STOP_THRESHOLD_SPEED, P_REQ_STOPPED_TIME, P_REACTION_TIME,
       P_MAX_ACCEL, P_STOP_LINE_BUFFER);
 
-// Decalre and initialized the Motion Planner and all its class requirements
+// Declare and initialized the Motion Planner and all its class requirements
 MotionPlanner motion_planner(P_NUM_PATHS, P_GOAL_OFFSET, P_ERR_TOLERANCE);
 
 bool have_obst = false;
@@ -218,15 +218,29 @@ int main ()
   /**
   * TODO (Step 1): create pid (pid_steer) for steer command and initialize values
   **/
-
+  PID pid_steer{} = PID(); // I have Used brackets to initialize the variables with 0 as explained here https://www.youtube.com/watch?v=lilq1PBaUR0
+  // I am going to initialize the Gains values trying to tune the PID
+  steer_Kp = 0.7;
+  steer_Kd = 0.5;
+  steer_Ki = 0.2;
+  steer_lower_limit = -1.2; // Given by STEP 3 Requirement of UDacity Project
+  steer_upper_limit = 1.2; // Given by STEP 3 Requirement of UDacity Project
+  pid_steer.Init(steer_Kp, steer_Kd, steer_Ki, steer_lower_limit, steer_upper_limit);	 // Initializing the gains
 
   // initialize pid throttle
   /**
   * TODO (Step 1): create pid (pid_throttle) for throttle command and initialize values
   **/
+  PID pid_throttle = PID(); // Instantiating the throttle class to create the throttle object
+  throttle_Kp = 0.1;
+  throttle_Kd = 0.3;
+  throttle_Ki = 0.4;
+  throttle_lower_limit = -1.0; // Given by STEP 2 Requirement of UDacity Project
+  throttle_upper_limit = 1.0;  // Given by STEP 2 Requirement of UDacity Project
+  pid_throttle.Init(throttle_Kp, throttle_Kd, throttle_Ki, throttle_lower_limit, throttle_upper_limit); // Initializing the gains
 
-  PID pid_steer = PID();
-  PID pid_throttle = PID();
+  //PID pid_steer = PID();  // I have just copied above 
+  //PID pid_throttle = PID();
 
   h.onMessage([&pid_steer, &pid_throttle, &new_delta_time, &timer, &prev_timer, &i, &prev_timer](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode)
   {
@@ -325,17 +339,21 @@ int main ()
           /**
           * TODO (step 2): uncomment these lines
           **/
-//           // Update the delta time with the previous command
-//           pid_throttle.UpdateDeltaTime(new_delta_time);
+           // Update the delta time with the previous command
+           pid_throttle.UpdateDeltaTime(new_delta_time);
 
           // Compute error of speed
           double error_throttle;
           /**
-          * TODO (step 2): compute the throttle error (error_throttle) from the position and the desired speed
+          * TODO (step 2): compute the throttle error (error_throttle) from the actual speed and the desired speed
           **/
+          //  ego_state.velocity.x = velocity;  // Copying here again to remember the variable name. ACTUAL SPEED
+          // v_points.push_back(velocity); // Vector of Trajectory calculated by the Path Planner. Must get the last [-1] from array. DESIRED SPEED
+          // website shows how https://www.tutorialspoint.com/cpp_standard_library/cpp_array_back.htm
+          
           // modify the following line for step 2
-          error_throttle = 0;
-
+          //error_throttle = 0; 
+          error_throttle = velocity - v_points.back(); // Actual speed - Desired speed	
 
 
           double throttle_output;
@@ -344,28 +362,28 @@ int main ()
           /**
           * TODO (step 2): uncomment these lines
           **/
-//           // Compute control to apply
-//           pid_throttle.UpdateError(error_throttle);
-//           double throttle = pid_throttle.TotalError();
+           // Compute control to apply
+           pid_throttle.UpdateError(error_throttle);
+           double throttle = pid_throttle.TotalError();
 
-//           // Adapt the negative throttle to break
-//           if (throttle > 0.0) {
-//             throttle_output = throttle;
-//             brake_output = 0;
-//           } else {
-//             throttle_output = 0;
-//             brake_output = -throttle;
-//           }
+           // Adapt the negative throttle to break
+           if (throttle > 0.0) {
+             throttle_output = throttle;
+             brake_output = 0;
+           } else {
+             throttle_output = 0;
+             brake_output = -throttle;
+           }
 
-//           // Save data
-//           file_throttle.seekg(std::ios::beg);
-//           for(int j=0; j < i - 1; ++j){
-//               file_throttle.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
-//           }
-//           file_throttle  << i ;
-//           file_throttle  << " " << error_throttle;
-//           file_throttle  << " " << brake_output;
-//           file_throttle  << " " << throttle_output << endl;
+           // Save data
+           file_throttle.seekg(std::ios::beg);
+           for(int j=0; j < i - 1; ++j){
+               file_throttle.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
+           }
+           file_throttle  << i ;
+           file_throttle  << " " << error_throttle;
+           file_throttle  << " " << brake_output;
+           file_throttle  << " " << throttle_output << endl;
 
 
           // Send control
