@@ -34,7 +34,7 @@ void PID::UpdateError(double cte) {
    **/
    current_cte = cte;
    // I guess I need to create an array to calculate the diff_cte and the int_cte....in this way I get
-   //diff_cte = current_cte - prev_cte
+   //diff_cte = current_cte - prev_cte // I could just calculate this differential error on main.cpp, because there I can call the update method and therefore have the previous  and actual cte.
    //int_cte = 0
    //int_cte += current_cte
 }
@@ -49,6 +49,8 @@ double PID::TotalError() {
     // MUST CALCULATE THE PID ERROR HERE!!! BELOW:
     // The total error is the sum of each cte, I guess it means the INTEGRAL ERROR?
     // MUST i CALCULATE HERE ??????????????????????? OR IN UpdateError() function above?
+    diff_cte = new_error_throttle - prev_error_throttle; 
+    int_cte += current_cte; // It was not possible to calculate the derivative error here, because I need to update the error and also have the previous error.
     
     // From Step 2 of Udacity the output of controller must be set to [-1,1]
     control = (-Kp*current_cte) + (-Kd*diff_cte) + (-Ki*int_cte);

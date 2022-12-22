@@ -315,6 +315,10 @@ int main ()
           * TODO (step 3): compute the steer error (error_steer) from the position and the desired trajectory
           **/
 //           error_steer = 0;
+	     double desired_steer = atan(y_points/x_points); // Planner waypoints DESIRED!
+	     double actual_steer = yaw  // Current heading of vehicle. The same of atan(y_position/x_position) = yaw 
+	     error_steer = desired_steer - actual_steer; //  Desired Steer - Angle of Actual Steer to reach the planned position.
+	     	
 
           /**
           * TODO (step 3): uncomment these lines
@@ -343,7 +347,7 @@ int main ()
            pid_throttle.UpdateDeltaTime(new_delta_time);
 
           // Compute error of speed
-          double error_throttle;
+          double error_throttle = 0.0;
           /**
           * TODO (step 2): compute the throttle error (error_throttle) from the actual speed and the desired speed
           **/
@@ -353,7 +357,9 @@ int main ()
           
           // modify the following line for step 2
           //error_throttle = 0; 
-          error_throttle = velocity - v_points.back(); // Actual speed - Desired speed	
+          double prev_error_throttle;
+          prev_error_throttle = pid_throttle.UpdateError(error_throttle);
+          error_throttle = v_points.back() - velocity; //  Desired speed - Actual Velocity	
 
 
           double throttle_output;
@@ -363,7 +369,12 @@ int main ()
           * TODO (step 2): uncomment these lines
           **/
            // Compute control to apply
-           pid_throttle.UpdateError(error_throttle);
+           //pid_throttle.UpdateError(error_throttle);
+           
+           double new_error_throttle;
+           new_error_throttle = pid_throttle.UpdateError(error_throttle);
+           // Calculating differential error = Actual Velocity Error - Previous Velocity Error
+           //diff_cte = new_error_throttle - prev_error_throttle;  // I will call this at pid_controller.cpp to let diff and int errors together
            double throttle = pid_throttle.TotalError();
 
            // Adapt the negative throttle to break

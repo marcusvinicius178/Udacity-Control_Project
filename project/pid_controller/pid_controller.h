@@ -19,7 +19,7 @@ public:
     */
     double current_cte;       // Crostrack Error (Proportional Term)
     double diff_cte;  // Derivative Cross Track Error
-    double int_cte;    // Integral Cross Track Error
+    double int_cte = 0.0;    // Integral Cross Track Error
 
     /*
     * Coefficients
