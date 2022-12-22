@@ -316,7 +316,7 @@ int main ()
           **/
 //           error_steer = 0;
 	     double desired_steer = atan(y_points/x_points); // Planner waypoints DESIRED!
-	     double actual_steer = yaw  // Current heading of vehicle. The same of atan(y_position/x_position) = yaw 
+	     double actual_steer = yaw;  // Current heading of vehicle. The same of atan(y_position/x_position) = yaw 
 	     error_steer = desired_steer - actual_steer; //  Desired Steer - Angle of Actual Steer to reach the planned position.
 	     	
 

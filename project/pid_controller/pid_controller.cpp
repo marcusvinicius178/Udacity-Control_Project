@@ -33,6 +33,7 @@ void PID::UpdateError(double cte) {
    * TODO: Update PID errors based on cte.
    **/
    current_cte = cte;
+   return current_cte;
    // I guess I need to create an array to calculate the diff_cte and the int_cte....in this way I get
    //diff_cte = current_cte - prev_cte // I could just calculate this differential error on main.cpp, because there I can call the update method and therefore have the previous  and actual cte.
    //int_cte = 0
