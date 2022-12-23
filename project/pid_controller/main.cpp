@@ -218,25 +218,26 @@ int main ()
   /**
   * TODO (Step 1): create pid (pid_steer) for steer command and initialize values
   **/
-  PID pid_steer{} = PID(); // I have Used brackets to initialize the variables with 0 as explained here https://www.youtube.com/watch?v=lilq1PBaUR0
+  PID pid_steer{}; // I have Used brackets to initialize the variables with 0 as explained here https://www.youtube.com/watch?v=lilq1PBaUR0
   // I am going to initialize the Gains values trying to tune the PID
-  steer_Kp = 0.7;
-  steer_Kd = 0.5;
-  steer_Ki = 0.2;
-  steer_lower_limit = -1.2; // Given by STEP 3 Requirement of UDacity Project
-  steer_upper_limit = 1.2; // Given by STEP 3 Requirement of UDacity Project
+  double steer_Kp = 0.7;
+  double steer_Kd = 0.5;
+  double steer_Ki = 0.2;
+  double steer_lower_limit = -1.2; // Given by STEP 3 Requirement of UDacity Project
+  double steer_upper_limit = 1.2; // Given by STEP 3 Requirement of UDacity Project
   pid_steer.Init(steer_Kp, steer_Kd, steer_Ki, steer_lower_limit, steer_upper_limit);	 // Initializing the gains
 
   // initialize pid throttle
   /**
-  * TODO (Step 1): create pid (pid_throttle) for throttle command and initialize values
+  * TODO (Step 1): crea
+  te pid (pid_throttle) for throttle command and initialize values
   **/
-  PID pid_throttle = PID(); // Instantiating the throttle class to create the throttle object
-  throttle_Kp = 0.1;
-  throttle_Kd = 0.3;
-  throttle_Ki = 0.4;
-  throttle_lower_limit = -1.0; // Given by STEP 2 Requirement of UDacity Project
-  throttle_upper_limit = 1.0;  // Given by STEP 2 Requirement of UDacity Project
+  PID pid_throttle{}; // Instantiating the throttle class to create the throttle object
+  double throttle_Kp = 0.1;
+  double throttle_Kd = 0.3;
+  double throttle_Ki = 0.4;
+  double throttle_lower_limit = -1.0; // Given by STEP 2 Requirement of UDacity Project
+  double throttle_upper_limit = 1.0;  // Given by STEP 2 Requirement of UDacity Project
   pid_throttle.Init(throttle_Kp, throttle_Kd, throttle_Ki, throttle_lower_limit, throttle_upper_limit); // Initializing the gains
 
   //PID pid_steer = PID();  // I have just copied above 
@@ -315,7 +316,7 @@ int main ()
           * TODO (step 3): compute the steer error (error_steer) from the position and the desired trajectory
           **/
 //           error_steer = 0;
-	     double desired_steer = atan(y_points/x_points); // Planner waypoints DESIRED!
+	     double desired_steer = atan(y_points.back()/x_points.back()); // Planner waypoints DESIRED!
 	     double actual_steer = yaw;  // Current heading of vehicle. The same of atan(y_position/x_position) = yaw 
 	     error_steer = desired_steer - actual_steer; //  Desired Steer - Angle of Actual Steer to reach the planned position.
 	     	

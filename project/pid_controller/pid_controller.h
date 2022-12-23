@@ -60,7 +60,7 @@ public:
     /*
     * Update the PID error variables given cross track error.
     */
-    void UpdateError(double cte);
+    double UpdateError(double cte);
 
     /*
     * Calculate the total PID error.
@@ -74,5 +74,4 @@ public:
 };
 
 #endif //PID_CONTROLLER_H
-
 
