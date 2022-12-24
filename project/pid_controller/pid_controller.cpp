@@ -26,6 +26,7 @@ void PID::Init(double Kpi, double Kii, double Kdi, double output_lim_maxi, doubl
    output_lim_min = output_lim_mini;
    //current_cte = 0.0; // Defined yet on pid_controller.h
    // It seems the errors must be initalized here and not on pid_controller.cpp as related here https://knowledge.udacity.com/questions/820447
+   prev_err = 0.0;
    current_cte = 0.0;
    diff_cte = 0.0;
    int_cte = 0.0;
