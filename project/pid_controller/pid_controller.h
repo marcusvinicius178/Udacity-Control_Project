@@ -21,6 +21,7 @@ public:
     double diff_cte;  // Derivative Cross Track Error
     double int_cte = 0.0;    // Integral Cross Track Error
     double prev_err = 0.0
+// Looking to this issue https://knowledge.udacity.com/questions/820447, it seems these variables values must be initialized on pid_controller.cpp, not here!
 
     /*
     * Coefficients

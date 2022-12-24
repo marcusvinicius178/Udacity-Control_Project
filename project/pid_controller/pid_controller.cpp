@@ -25,7 +25,10 @@ void PID::Init(double Kpi, double Kii, double Kdi, double output_lim_maxi, doubl
    output_lim_max = output_lim_maxi;
    output_lim_min = output_lim_mini;
    //current_cte = 0.0; // Defined yet on pid_controller.h
-  
+   // It seems the errors must be initalized here and not on pid_controller.cpp as related here https://knowledge.udacity.com/questions/820447
+   current_cte = 0.0;
+   diff_cte = 0.0;
+   int_cte = 0.0;
    
 }
 
@@ -34,17 +37,24 @@ void PID::UpdateError(double cte) {
    /**
    * TODO: Update PID errors based on cte.
    **/
+   // Proportional Error
    current_cte = cte;
-   diff_cte = (cte - prev_err) /delta_time;
-   prev_err = cte; // Otherwise if you do diff_cte -=cte it will be always equal = 0
+   // Differential Error
+   if (delta_time>0){ // We must check if delta_time = 0 or not to avoid error in divistion, according to this link
+ 
+  	diff_cte = (cte - prev_err) /delta_time;
+   	prev_err = cte; // Otherwise if you do diff_cte -=cte it will be always equal = 0
+   }
+   else{
+   	diff_cte = 0.0;
+   	}
+   
+   // Integral Error;
    int_cte += cte*delta_time;  
    
    
-   //return current_cte;
-   // I guess I need to create an array to calculate the diff_cte and the int_cte....in this way I get
-   //diff_cte = current_cte - prev_cte // I could just calculate this differential error on main.cpp, because there I can call the update method and therefore have the previous  and actual cte.
-   //int_cte = 0
-   //int_cte += current_cte
+   
+  
 }
 
 double PID::TotalError() {
@@ -75,4 +85,5 @@ double PID::UpdateDeltaTime(double new_delta_time) {
    * TODO: Update the delta time with new value
    */
    delta_time = new_delta_time;
+   return delta_time;
 }
