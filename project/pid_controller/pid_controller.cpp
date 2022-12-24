@@ -1,7 +1,7 @@
 /**********************************************
  * Self-Driving Car Nano-degree - Udacity
- *  Created on: December 11, 2020
- *      Author: Mathilde Badoual
+ *  Created on: December 15, 2022
+ *      Author: Marcus Vinícius
  **********************************************/
 
 #include "pid_controller.h"
@@ -24,16 +24,23 @@ void PID::Init(double Kpi, double Kii, double Kdi, double output_lim_maxi, doubl
    Kd = Kdi;    //The Kd Derivative coefficient from pid_controller.h file receives the input value = Kdi 
    output_lim_max = output_lim_maxi;
    output_lim_min = output_lim_mini;
+   //current_cte = 0.0; // Defined yet on pid_controller.h
+  
    
 }
 
 
-double PID::UpdateError(double cte) {
+void PID::UpdateError(double cte) {
    /**
    * TODO: Update PID errors based on cte.
    **/
    current_cte = cte;
-   return current_cte;
+   diff_cte = (cte - prev_err) /delta_time;
+   prev_err = cte; // Otherwise if you do diff_cte -=cte it will be always equal = 0
+   int_cte += cte*delta_time;  
+   
+   
+   //return current_cte;
    // I guess I need to create an array to calculate the diff_cte and the int_cte....in this way I get
    //diff_cte = current_cte - prev_cte // I could just calculate this differential error on main.cpp, because there I can call the update method and therefore have the previous  and actual cte.
    //int_cte = 0
@@ -47,13 +54,7 @@ double PID::TotalError() {
     // From Step 2 of Udacity the output of controller must be set to [-1,1]
    */
     double control;
-    // MUST CALCULATE THE PID ERROR HERE!!! BELOW:
-    // The total error is the sum of each cte, I guess it means the INTEGRAL ERROR?
-    // MUST i CALCULATE HERE ??????????????????????? OR IN UpdateError() function above?
-    //diff_cte = new_error_throttle - prev_error_throttle; 
-    int_cte += current_cte; // It was not possible to calculate the derivative error here, because I need to update the error and also have the previous error.
-    
-    // From Step 2 of Udacity the output of controller must be set to [-1,1]
+
     control = (-Kp*current_cte) + (-Kd*diff_cte) + (-Ki*int_cte);
     if (control < output_lim_min){
     	cout << "Control Output (torque) is TOO LOW, adjusting to minimum value = " << output_lim_min << " \n ";

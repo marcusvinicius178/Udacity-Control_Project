@@ -1,8 +1,7 @@
 /**********************************************
  * Self-Driving Car Nano-degree - Udacity
- *  Created on: September 20, 2020
- *      Author: Munir Jojo-Verge
- 				Aaron Brown
+ *  Created on: December 15 , 2022
+ *      Author: Marcus Vinícius
  **********************************************/
 
 /**
@@ -220,9 +219,9 @@ int main ()
   **/
   PID pid_steer{}; // I have Used brackets to initialize the variables with 0 as explained here https://www.youtube.com/watch?v=lilq1PBaUR0
   // I am going to initialize the Gains values trying to tune the PID
-  double steer_Kp = 0.7;
-  double steer_Kd = 0.5;
-  double steer_Ki = 0.2;
+  double steer_Kp = 0.01;
+  double steer_Kd = 0.02;
+  double steer_Ki = 0.05;
   double steer_lower_limit = -1.2; // Given by STEP 3 Requirement of UDacity Project
   double steer_upper_limit = 1.2; // Given by STEP 3 Requirement of UDacity Project
   pid_steer.Init(steer_Kp, steer_Kd, steer_Ki, steer_lower_limit, steer_upper_limit);	 // Initializing the gains
@@ -233,9 +232,9 @@ int main ()
   te pid (pid_throttle) for throttle command and initialize values
   **/
   PID pid_throttle{}; // Instantiating the throttle class to create the throttle object
-  double throttle_Kp = 0.1;
-  double throttle_Kd = 0.3;
-  double throttle_Ki = 0.4;
+  double throttle_Kp = 0.01;
+  double throttle_Kd = 0.03;
+  double throttle_Ki = 0.04;
   double throttle_lower_limit = -1.0; // Given by STEP 2 Requirement of UDacity Project
   double throttle_upper_limit = 1.0;  // Given by STEP 2 Requirement of UDacity Project
   pid_throttle.Init(throttle_Kp, throttle_Kd, throttle_Ki, throttle_lower_limit, throttle_upper_limit); // Initializing the gains
@@ -303,13 +302,11 @@ int main ()
           /**
           * TODO (step 3): uncomment these lines
           **/
-//           // Update the delta time with the previous command
-//           pid_steer.UpdateDeltaTime(new_delta_time);
+           // Update the delta time with the previous command
+           pid_steer.UpdateDeltaTime(new_delta_time);
 
           // Compute steer error
           double error_steer;
-
-
           double steer_output;
 
           /**
@@ -324,18 +321,18 @@ int main ()
           /**
           * TODO (step 3): uncomment these lines
           **/
-//           // Compute control to apply
-//           pid_steer.UpdateError(error_steer);
-//           steer_output = pid_steer.TotalError();
+           // Compute control to apply
+           pid_steer.UpdateError(error_steer);
+           steer_output = pid_steer.TotalError();
 
 //           // Save data
-//           file_steer.seekg(std::ios::beg);
-//           for(int j=0; j < i - 1; ++j) {
-//               file_steer.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-//           }
-//           file_steer  << i ;
-//           file_steer  << " " << error_steer;
-//           file_steer  << " " << steer_output << endl;
+           file_steer.seekg(std::ios::beg);
+           for(int j=0; j < i - 1; ++j) {
+               file_steer.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+           }
+           file_steer  << i ;
+           file_steer  << " " << error_steer;
+           file_steer  << " " << steer_output << endl;
 
           ////////////////////////////////////////
           // Throttle control
@@ -358,8 +355,8 @@ int main ()
           
           // modify the following line for step 2
           //error_throttle = 0; 
-          double prev_error_throttle;
-          prev_error_throttle = pid_throttle.UpdateError(error_throttle);
+          //double prev_error_throttle;
+          //prev_error_throttle = pid_throttle.UpdateError(error_throttle);
           error_throttle = v_points.back() - velocity; //  Desired speed - Actual Velocity	
 
 
@@ -372,8 +369,8 @@ int main ()
            // Compute control to apply
            //pid_throttle.UpdateError(error_throttle);
            
-           double new_error_throttle;
-           new_error_throttle = pid_throttle.UpdateError(error_throttle);
+           //double new_error_throttle;
+           //new_error_throttle = pid_throttle.UpdateError(error_throttle);
            // Calculating differential error = Actual Velocity Error - Previous Velocity Error
            //diff_cte = new_error_throttle - prev_error_throttle;  // I will call this at pid_controller.cpp to let diff and int errors together
            double throttle = pid_throttle.TotalError();

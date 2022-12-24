@@ -1,7 +1,7 @@
 /**********************************************
  * Self-Driving Car Nano-degree - Udacity
- *  Created on: December 11, 2020
- *      Author: Mathilde Badoual
+ *  Created on: December 15, 2022
+ *      Author: Marcus Vinícius
  **********************************************/
 
 #ifndef PID_CONTROLLER_H
@@ -17,9 +17,10 @@ public:
     /*
     * Errors
     */
-    double current_cte;       // Crostrack Error (Proportional Term)
+    double current_cte = 0.0;       // Crostrack Error (Proportional Term)
     double diff_cte;  // Derivative Cross Track Error
     double int_cte = 0.0;    // Integral Cross Track Error
+    double prev_err = 0.0
 
     /*
     * Coefficients
@@ -60,7 +61,7 @@ public:
     /*
     * Update the PID error variables given cross track error.
     */
-    double UpdateError(double cte);
+    void UpdateError(double cte);
 
     /*
     * Calculate the total PID error.
@@ -74,4 +75,3 @@ public:
 };
 
 #endif //PID_CONTROLLER_H
-
