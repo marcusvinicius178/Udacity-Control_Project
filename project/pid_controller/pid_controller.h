@@ -17,10 +17,10 @@ public:
     /*
     * Errors
     */
-    double current_cte = 0.0;       // Crostrack Error (Proportional Term)
-    double diff_cte;  // Derivative Cross Track Error
-    double int_cte = 0.0;    // Integral Cross Track Error
-    double prev_err = 0.0
+    double proportional_error;       // Crostrack Error (Proportional Term)
+    double differential_error;  // Derivative Cross Track Error
+    double integral_error;    // Integral Cross Track Error
+
 // Looking to this issue https://knowledge.udacity.com/questions/820447, it seems these variables values must be initialized on pid_controller.cpp, not here!
 
     /*

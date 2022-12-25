@@ -222,9 +222,9 @@ int main ()
   double steer_Kp = 0.01;
   double steer_Kd = 0.02;
   double steer_Ki = 0.05;
-  double steer_lower_limit = -1.2; // Given by STEP 3 Requirement of UDacity Project
   double steer_upper_limit = 1.2; // Given by STEP 3 Requirement of UDacity Project
-  pid_steer.Init(steer_Kp, steer_Kd, steer_Ki, steer_lower_limit, steer_upper_limit);	 // Initializing the gains
+  double steer_lower_limit = -1.2; // Given by STEP 3 Requirement of UDacity Project
+  pid_steer.Init(steer_Kp, steer_Kd, steer_Ki, steer_upper_limit, steer_lower_limit);	 // Initializing the gains
 
   // initialize pid throttle
   /**
@@ -235,9 +235,9 @@ int main ()
   double throttle_Kp = 0.01;
   double throttle_Kd = 0.03;
   double throttle_Ki = 0.04;
-  double throttle_lower_limit = -1.0; // Given by STEP 2 Requirement of UDacity Project
   double throttle_upper_limit = 1.0;  // Given by STEP 2 Requirement of UDacity Project
-  pid_throttle.Init(throttle_Kp, throttle_Kd, throttle_Ki, throttle_lower_limit, throttle_upper_limit); // Initializing the gains
+  double throttle_lower_limit = -1.0; // Given by STEP 2 Requirement of UDacity Project
+  pid_throttle.Init(throttle_Kp, throttle_Kd, throttle_Ki, throttle_upper_limit, throttle_lower_limit); // Initializing the gains
 
   //PID pid_steer = PID();  // I have just copied above 
   //PID pid_throttle = PID();
@@ -307,6 +307,8 @@ int main ()
 
           // Compute steer error
           double error_steer;
+          
+          
           double steer_output;
 
           /**
@@ -318,6 +320,7 @@ int main ()
 	     //double desired_steer =  atan2( (y_points.rbegin()[0] - y_points.rbegin()[1] ),  (x_points.back() - x_points.rbegin(1)) );
 	     //atan 2 deals with division by 0 and avoid negative angles as explained here: https://maththebeautiful.com/angle-between-points/
 	  double desired_steer = angle_between_points(x_points[x_points.size()-2], y_points[y_points.size()-2], x_points[x_points.size()-1], y_points[y_points.size()-1]);
+
 	  //double actual_steer = yaw;  // Current heading of vehicle. The same of atan(y_position/x_position) = yaw 
 	  error_steer = desired_steer - yaw; //actual_steer; //  Desired Steer - Angle of Actual Steer to reach the planned position.
 	     	
