@@ -213,18 +213,30 @@ int main ()
   time_t timer;
   time(&prev_timer);
 
+
+ 
   // initialize pid steer
   /**
   * TODO (Step 1): create pid (pid_steer) for steer command and initialize values
   **/
-  PID pid_steer{}; // I have Used brackets to initialize the variables with 0 as explained here https://www.youtube.com/watch?v=lilq1PBaUR0
+  PID pid_steer{}; // I have Used brackets to initialize the variables with 0 as explained here https://www.youtube.com/watch?v=lilq1PBaUR0 
+  
   // I am going to initialize the Gains values trying to tune the PID
-  double steer_Kp = 0.4;
-  double steer_Kd = 0.01;
-  double steer_Ki = 0.8;
+  double steer_Kp = 0.0;
+  double steer_Kd = 0.0;
+  double steer_Ki = 0.0;
   double steer_upper_limit = 1.2; // Given by STEP 3 Requirement of UDacity Project
   double steer_lower_limit = -1.2; // Given by STEP 3 Requirement of UDacity Project
-  pid_steer.Init(steer_Kp, steer_Kd, steer_Ki, steer_upper_limit, steer_lower_limit);	 // Initializing the gains
+  
+  // Based on steer_error the below function will update the gain with increments of twiddle() function
+  vector<double> gains_steer = {steer_Kp, steer_Kd, steer_Ki}; //3 Parameters, P, D and I (PID)
+  vector<double> increment_gains = {0.0, 0.0, 0.0}; // Just Randomly chosen values for gains...which will be changed after  call TwiddleGains funcs..
+  vector<double> new_gain_steer -=  gains_steer;
+  vector<double> new_increment_gains += increment_gains;
+
+  //pid_steer.Init(steer_Kp, steer_Kd, steer_Ki, steer_upper_limit, steer_lower_limit);	 // Initializing the gains
+  pid_steer.Init(gains_steer[0],gains_steer[1], gains_steer[2], steer_upper_limit, steer_lower_limit);
+  
 
   // initialize pid throttle
   /**
@@ -232,15 +244,30 @@ int main ()
   te pid (pid_throttle) for throttle command and initialize values
   **/
   PID pid_throttle{}; // Instantiating the throttle class to create the throttle object
-  double throttle_Kp = 0.21;
-  double throttle_Kd = 0.0009;
-  double throttle_Ki = 0.1;
+
+  double throttle_Kp = 0.0;
+  double throttle_Kd = 0.0;
+  double throttle_Ki = 0.0;
   double throttle_upper_limit = 1.0;  // Given by STEP 2 Requirement of UDacity Project
   double throttle_lower_limit = -1.0; // Given by STEP 2 Requirement of UDacity Project
-  pid_throttle.Init(throttle_Kp, throttle_Kd, throttle_Ki, throttle_upper_limit, throttle_lower_limit); // Initializing the gains
+  
+  vector<double> gains_throttle = {0.0, 0.0, 0.0}; //3 Parameters, P, D and I (PID)
+  vector<double> increment_gains = {0.0, 0.0, 0.0};
+  vector<double> new_gains_throttle = {0.0, 0.0, 0.0};
+  new_gains_throttle -= gains_throttle;
+  vector<double> new_increment_gains += increment_gains;
+  
+  
+  //pid_throttle.Init(throttle_Kp, throttle_Kd, throttle_Ki, throttle_upper_limit, throttle_lower_limit); // Initializing the gains
+  pid_throttle.Init(new_gains_throttle[0], new_gains_throttle[1], new_gains_throttle[2], throttle_upper_limit, throttle_lower_limit);
 
-  //PID pid_steer = PID();  // I have just copied above 
-  //PID pid_throttle = PID();
+  
+ // while (error_steer > 0.01 & error_throttle > 0.01){
+  // update_gains(); // check if error_with_gains < error_steer
+  new_gains_steer, new_increment_gains = pid_steer.TwiddleGainsUp();
+  pid_steer.Init(gains_steer[0],gains_steer[1], gains_steer[2], steer_upper_limit, steer_lower_limit);
+
+
 
   h.onMessage([&pid_steer, &pid_throttle, &new_delta_time, &timer, &prev_timer, &i, &prev_timer](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode)
   {
@@ -294,7 +321,7 @@ int main ()
           time(&timer);
           new_delta_time = difftime(timer, prev_timer);
           prev_timer = timer;
-
+  }
           ////////////////////////////////////////
           // Steering control
           ////////////////////////////////////////
@@ -307,8 +334,7 @@ int main ()
 
           // Compute steer error
           double error_steer;
-          
-          
+            
           double steer_output;
 
           /**
@@ -319,13 +345,36 @@ int main ()
 // I imagined that the atan would get already the distance y and x distance from vehicle's origin (heading) but it is needed to know where the vehicle was at the LAST TIME = y_points.rbegin()[0] subtracted by the SECONDA - LAST TIME y_points.rbegin()[1] for y and x also.
 	     //double desired_steer =  atan2( (y_points.rbegin()[0] - y_points.rbegin()[1] ),  (x_points.back() - x_points.rbegin(1)) );
 	     //atan 2 deals with division by 0 and avoid negative angles as explained here: https://maththebeautiful.com/angle-between-points/
-	  //double desired_steer = angle_between_points(x_points[x_points.size()-2], y_points[y_points.size()-2], x_points[x_points.size()-1], y_points[y_points.size()-1]);
-	  double desired_steer = angle_between_points(x_points[x_position, y_position, x_points[x_points.size()-1], y_points[y_points.size()-1]);
-	  // x_position and y_position returns the current location pose ....and x_points, y_points the path planning pose.
+	  double desired_steer = angle_between_points(x_points[x_points.size()-2], y_points[y_points.size()-2], x_points[x_points.size()-1], y_points[y_points.size()-1]);
 
 	  //double actual_steer = yaw;  // Current heading of vehicle. The same of atan(y_position/x_position) = yaw 
 	  error_steer = desired_steer - yaw; //actual_steer; //  Desired Steer - Angle of Actual Steer to reach the planned position.
-	     	
+	  double steer_tolerance = 0.01; // Try to reduce error_steer to this threshold
+	  double best_steer_error = error_steer;
+	  double new_steer_error;
+	  
+	  while error_steer < steer_tolerance{
+	  
+	  	pid_steer.TwiddleGainsUp(gains, increment_gains); // In next loop the control ouptut variable will reduce the steer error or not
+  	
+	  	double new_up_desired_steer = angle_between_points(x_points[x_points.size()-2], y_points[y_points.size()-2], x_points[x_points.size()-1], y_points[y_points.size()-1]);
+	  	
+	  	
+	  	new_up_steer_error = new_up_desired_steer - yaw;
+	  	if (new_up_steer_error < steer_error){
+	  		best_steer_error = new_up_steer_error; // Setting the best_steer_error if condition was True = optimizing gains_value	  	
+	  	} else if (new_up_steer_error > steer_error){
+	  		pid_steer.TwiddleGainsDown(gains, increment_gains);
+	  		// must calculate the new_steer_error which would basically call a huge block of code of main.cpp to get the control output again.
+	  	  		
+		       double new_down_desired_steer = angle_between_points(x_points[x_points.size()-2], y_points[y_points.size()-2], x_points[x_points.size()-1], y_points[y_points.size()-1]);
+	  	
+		  	new_down_steer_error = new_down_desired_steer - yaw;
+		  	if (new_down_steer_error < steer_error){
+		  		best_steer_error = new_down_steer_error;
+		  		}
+	  		else{
+	  			TwiddleShrinkGains(gains,increment_gains);
 
           /**
           * TODO (step 3): uncomment these lines
@@ -366,9 +415,7 @@ int main ()
           //error_throttle = 0; 
           //double prev_error_throttle;
           //prev_error_throttle = pid_throttle.UpdateError(error_throttle);
-          //error_throttle = v_points.back() - velocity; //  Desired speed - Actual Velocity	
-          error_throttle = v_points[v_points.size()- 1] - velocity; 
-	  
+          error_throttle = v_points.back() - velocity; //  Desired speed - Actual Velocity	
 
 
           double throttle_output;
