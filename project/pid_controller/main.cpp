@@ -320,7 +320,7 @@ int main ()
 	     //double desired_steer =  atan2( (y_points.rbegin()[0] - y_points.rbegin()[1] ),  (x_points.back() - x_points.rbegin(1)) );
 	     //atan 2 deals with division by 0 and avoid negative angles as explained here: https://maththebeautiful.com/angle-between-points/
 	  //double desired_steer = angle_between_points(x_points[x_points.size()-2], y_points[y_points.size()-2], x_points[x_points.size()-1], y_points[y_points.size()-1]);
-	  double desired_steer = angle_between_points(x_points[x_position, y_position, x_points[x_points.size()-1], y_points[y_points.size()-1]);
+	  double desired_steer = angle_between_points(x_position, y_position, x_points[x_points.size()-1], y_points[y_points.size()-1]);
 	  // x_position and y_position returns the current location pose ....and x_points, y_points the path planning pose.
 
 	  //double actual_steer = yaw;  // Current heading of vehicle. The same of atan(y_position/x_position) = yaw 
