@@ -222,8 +222,8 @@ int main ()
   double steer_Kp = 0.4;
   double steer_Kd = 0.01;
   double steer_Ki = 0.8;
-  double steer_upper_limit = 1.2; // Given by STEP 3 Requirement of UDacity Project
-  double steer_lower_limit = -1.2; // Given by STEP 3 Requirement of UDacity Project
+  double steer_upper_limit = 0.61; // Given by STEP 3 Requirement of UDacity Project | I have RECALCULATED according to my thought: https://knowledge.udacity.com/questions/941131
+  double steer_lower_limit = -0.61; // Given by STEP 3 Requirement of UDacity Project | I have/ RECALCULATED 
   pid_steer.Init(steer_Kp, steer_Kd, steer_Ki, steer_upper_limit, steer_lower_limit);	 // Initializing the gains
 
   // initialize pid throttle
